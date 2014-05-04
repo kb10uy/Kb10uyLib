@@ -20,6 +20,5 @@ namespace Kb10uy.Audio.FM
     /// </summary>
     public static class Algorithms
     {
-        public static double 
     }
 }
