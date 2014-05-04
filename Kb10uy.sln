@@ -11,6 +11,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scripting", "Scripting\Scri
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kb10uyCUISample", "Kb10uyCUISample\Kb10uyCUISample.csproj", "{59441152-813B-4969-89D2-D3C726412BA5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{14AADC71-8DAD-4FB8-8B1D-CA47DA7A92C1}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Audio", "Audio\Audio.csproj", "{20E55C8E-1D73-48F8-9C29-B8857B73A2B8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +60,13 @@ Global
 		{59441152-813B-4969-89D2-D3C726412BA5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{59441152-813B-4969-89D2-D3C726412BA5}.Release|x86.ActiveCfg = Release|x86
 		{59441152-813B-4969-89D2-D3C726412BA5}.Release|x86.Build.0 = Release|x86
+		{20E55C8E-1D73-48F8-9C29-B8857B73A2B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20E55C8E-1D73-48F8-9C29-B8857B73A2B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20E55C8E-1D73-48F8-9C29-B8857B73A2B8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{20E55C8E-1D73-48F8-9C29-B8857B73A2B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20E55C8E-1D73-48F8-9C29-B8857B73A2B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20E55C8E-1D73-48F8-9C29-B8857B73A2B8}.Release|x86.ActiveCfg = Release|x86
+		{20E55C8E-1D73-48F8-9C29-B8857B73A2B8}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
