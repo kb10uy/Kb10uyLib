@@ -34,7 +34,7 @@ kb10uy
 > THE SOFTWARE.
 
 ##Audioについて
-Kb10uy.Audioは、Ms-PLライセンスのNAudio(http://naudio.codeplex.com/)を利用しています。  
+Kb10uy.Audioは、Ms-PLライセンスのNAudio( http://naudio.codeplex.com/ )を利用しています。  
 NAudioは、markheath氏の著作物です。Kb10uy.Audioを利用する際は、この表示を
 アプリケーション内の何処かに表示してください。
 
