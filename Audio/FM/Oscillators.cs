@@ -8,10 +8,10 @@ namespace Kb10uy.Audio.FM
 {
 
     /// <summary>
-    /// オシレータの
+    /// オシレータのデリゲートを定義します。
     /// </summary>
-    /// <param name="t"></param>
-    /// <returns></returns>
+    /// <param name="t">0~1の周期内のポジション</param>
+    /// <returns>-1~+1の値</returns>
     public delegate double OscillatorFunction(double t);
 
     /// <summary>

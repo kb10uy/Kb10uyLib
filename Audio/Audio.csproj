@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Kb10uy.Audio</RootNamespace>
-    <AssemblyName>Audio</AssemblyName>
+    <AssemblyName>Kb10uy.Audio</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
@@ -39,7 +39,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>bin\x86\Debug\Audio.XML</DocumentationFile>
+    <DocumentationFile>bin\x86\Debug\Kb10uy.Audio.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -49,7 +49,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>bin\x86\Release\Audio.XML</DocumentationFile>
+    <DocumentationFile>bin\x86\Release\Kb10uy.Audio.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NAudio">
@@ -64,6 +64,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FM\Algorithms.cs" />
+    <Compile Include="FM\FMSynthesiser.cs" />
+    <Compile Include="FM\Operator.cs" />
     <Compile Include="FM\Oscillators.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

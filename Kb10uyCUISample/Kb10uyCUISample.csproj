@@ -68,6 +68,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Audio\Audio.csproj">
+      <Project>{20e55c8e-1d73-48f8-9c29-b8857b73a2b8}</Project>
+      <Name>Audio</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Kb10uy\Kb10uy.csproj">
       <Project>{a4f1cf05-fe9d-4bce-97c7-821f18d70373}</Project>
       <Name>Kb10uy</Name>

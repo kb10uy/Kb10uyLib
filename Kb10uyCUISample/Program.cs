@@ -8,6 +8,7 @@ using Kb10uy.Scripting;
 using Kb10uy.Extension;
 using Kb10uy.MultiMedia;
 using Kb10uy.Scripting.Text;
+using Kb10uy.Audio.FM;
 
 namespace Kb10uyCUISample
 {
@@ -46,6 +47,7 @@ every {
             ");
 
             Console.ReadLine();
+            var ope = new Operator();
         }
     }
 }
