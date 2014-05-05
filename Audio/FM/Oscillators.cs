@@ -27,7 +27,7 @@ namespace Kb10uy.Audio.FM
         /// <returns>-1.0~1.0までの範囲の値</returns>
         public static double Sine(double t)
         {
-            return Math.Sin(Math.PI * t);
+            return Math.Sin(Math.PI * 2.0 * t);
         }
 
         /// <summary>
