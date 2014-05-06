@@ -47,7 +47,7 @@ every {
             ");
 
             Console.ReadLine();
-            var ope = new Operator();
+            var ope = new FMOperator();
         }
     }
 }

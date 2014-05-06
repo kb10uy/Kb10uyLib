@@ -12,13 +12,13 @@ namespace Kb10uy.Audio.FM
     /// </summary>
     /// <param name="t">0~1の周期内のポジション</param>
     /// <returns>-1~+1の値</returns>
-    public delegate double OscillatorFunction(double t);
+    public delegate double FMOscillatorFunction(double t);
 
     /// <summary>
     /// FM音源におけるオシレータ関数を定義します。
     /// 渡す値は必ず0~1である必要があります。
     /// </summary>
-    public static class Oscillators
+    public static class FMOscillators
     {
         /// <summary>
         /// 正弦波オシレータを定義します。

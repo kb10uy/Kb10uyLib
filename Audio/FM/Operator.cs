@@ -9,13 +9,13 @@ namespace Kb10uy.Audio.FM
     /// <summary>
     /// FM音源におけるオペレータを定義します。
     /// </summary>
-    public class Operator
+    public class FMOperator
     {
         #region プロパティ
         /// <summary>
         /// 使用されるオシレータを取得・設定します。
         /// </summary>
-        public OscillatorFunction Oscillator { get; set; }
+        public FMOscillatorFunction Oscillator { get; set; }
 
         /// <summary>
         /// 使用されるエンベロープを取得・設定します。
@@ -23,37 +23,9 @@ namespace Kb10uy.Audio.FM
         public Envelope Envelope { get; set; }
 
         /// <summary>
-        /// <para>
-        /// ホールドされる長さを一定にしたい場合、trueにします。
-        /// この時、HoldingLengthプロパティも設定する必要があります。
-        /// </para>
-        /// <para>
-        /// 逆に、ホールドされる長さが不定で、
-        /// Attack・Releaseメソッドで制御する場合は
-        /// falseにします。
-        /// </para>
+        /// 変調指数、もしくは振幅を取得・設定します。
         /// </summary>
-        public bool IsConstantHolding { get; set; }
-
-        /// <summary>
-        /// IsConstantHoldingプロパティがtrueの場合、
-        /// ホールドされる長さ(ASD間の長さ)を取得・設定します。
-        /// </summary>
-        /// <remarks>
-        /// IsConstantHoldingプロパティがfalseの場合、
-        /// このプロパティは参照されません。
-        /// </remarks>
-        public double HoldingLength { get; set; }
-
-        /// <summary>
-        /// 現在のオシレータの発振周波数を取得・設定します。
-        /// </summary>
-        public double Frequency { get; set; }
-
-        /// <summary>
-        /// 現在発音されているかを取得します。
-        /// </summary>
-        public bool IsHolding { get; protected set; }
+        public double ModulationIndex { get; set; }
         #endregion
 
         #region コンストラクタ
@@ -61,84 +33,84 @@ namespace Kb10uy.Audio.FM
         /// Operatorクラスの新しいインスタンスを初期化します。
         /// オシレータは正弦波、エンベロープはデフォルトになります。
         /// </summary>
-        public Operator()
+        public FMOperator()
         {
-            Oscillator = Oscillators.Sine;
+            Oscillator = FMOscillators.Sine;
             Envelope = Envelope.Default;
-            IsConstantHolding = false;
-            HoldingLength = 0;
+            ModulationIndex = 1.0;
         }
 
         /// <summary>
         /// Operatorクラスの新しいインスタンスを初期化します。
-        /// オシレータは正弦波、エンベロープはデフォルトになります。
         /// </summary>
-        public Operator(OscillatorFunction osc,double freq)
+        /// <param name="osc">オシレータ</param>
+        public FMOperator(FMOscillatorFunction osc)
+            : this()
         {
-            Oscillator = Oscillators.Sine;
-            Envelope = Envelope.Default;
-            IsConstantHolding = false;
-            HoldingLength = 0;
+            Oscillator = osc;
+        }
+
+        /// <summary>
+        /// Operatorクラスの新しいインスタンスを初期化します。
+        /// </summary>
+        /// <param name="osc">オシレータ</param>
+        /// <param name="index">変調指数・振幅</param>
+        public FMOperator(FMOscillatorFunction osc, double index)
+            : this(osc)
+        {
+            ModulationIndex = index;
         }
         #endregion
 
         /// <summary>
-        /// 発音可能な状態に移行します。
+        /// 現在のオペレータの情報を取得します。
+        /// 固定長発音関係は取得できません。
         /// </summary>
-        public void Attack()
+        /// <returns>取得される情報</returns>
+        public OperatorInfomation GetInfomation()
         {
-            if (IsConstantHolding) throw new InvalidOperationException("IsConstanrtHoldingプロパティがtrueの状態でAttackメソッドが呼び出されました");
-            IsHolding = true;
+            return new OperatorInfomation
+            {
+                Oscillator = this.Oscillator,
+                Envelope = this.Envelope,
+                ModulationIndex = this.ModulationIndex
+            };
         }
 
         /// <summary>
-        /// 発音可能な状態に移行します。
+        /// 指定された情報を、現在のオペレータに適用します。
+        /// <para>nullのプロパティは反映されません。</para>
         /// </summary>
-        /// <param name="freq">周波数</param>
-        public void Attack(double freq)
+        /// <param name="info">オペレータ情報</param>
+        public void SetInfomation(OperatorInfomation info)
         {
-            if (IsConstantHolding) throw new InvalidOperationException("IsConstanrtHoldingプロパティがtrueの状態でAttackメソッドが呼び出されました");
-            Frequency = freq;
-            IsHolding = true;
+            Oscillator = info.Oscillator ?? this.Oscillator;
+            Envelope = info.Envelope ?? this.Envelope;
+            ModulationIndex = info.ModulationIndex ?? this.ModulationIndex;
         }
 
         /// <summary>
-        /// 発音を停止し、エンベロープのリリース状態に移行します。
-        /// </summary>
-        /// <returns>
-        /// リリースエンベロープの時間の基準値。
-        /// 実際には、EnvelopeプロパティののAttackとDecayを加算した値。
-        /// <para>
-        /// 例えば0.5秒後のリリースの状態を取得したい場合、
-        /// このメソッドの返り値に0.5を加えた値をGet(Envelope)Stateメソッドに渡します。
-        /// </para>
-        /// </returns>
-        public double Release()
-        {
-            if (IsConstantHolding) throw new InvalidOperationException("IsConstanrtHoldingプロパティがtrueの状態でReleaseメソッドが呼び出されました");
-            IsHolding = false;
-            return Envelope.Attack + Envelope.Decay;
-        }
-
-        /// <summary>
+        /// ホールドし始めた時刻を0として、
         /// 指定した時刻のオペレータ出力を取得します。
         /// </summary>
-        /// <param name="t">時刻</param>
+        /// <param name="state">合成状態の情報</param>
         /// <returns>オペレータ出力</returns>
-        public double GetState(double t)
+        public double GetState(FMSynthesisState state)
         {
-            var env = GetEnvelopeState(t);
-            var cycle = 1.0 / Frequency;
-            var pos = (t % cycle) / cycle;
-            return Oscillator(pos) * env;
+            var env = GetEnvelopeState(state.Time, state.IsHolding);
+            var cycle = 1.0 / state.Frequency;
+            var pos = (state.Time % cycle) / cycle;
+            return ModulationIndex * Oscillator(pos) * env;
         }
 
         /// <summary>
         /// 指定した時刻のエンベロープの状態を取得します。
+        /// holdがfalseの場合、Release以降の時として計算されます。
         /// </summary>
         /// <param name="t">時刻</param>
+        /// <param name="hold">発音の状態</param>
         /// <returns>エンベロープの状態</returns>
-        public double GetEnvelopeState(double t)
+        public double GetEnvelopeState(double t, bool hold)
         {
             if (t < Envelope.Attack)
             {
@@ -152,29 +124,13 @@ namespace Kb10uy.Audio.FM
             }
             else
             {
-                if (IsConstantHolding)
+                if (hold)
                 {
-                    if (t < HoldingLength)
-                    {
-                        return Envelope.Sustain;
-                    }
-                    else
-                    {
-                        var rt = t - HoldingLength;
-                        return rt < Envelope.Release ? -(Envelope.Sustain / Envelope.Release) * rt : 0.0;
-                    }
+                    return Envelope.Sustain;
                 }
                 else
                 {
-                    if (IsHolding)
-                    {
-                        return Envelope.Sustain;
-                    }
-                    else
-                    {
-                        var rt = t - (Envelope.Attack + Envelope.Decay);
-                        return rt < Envelope.Release ? -(Envelope.Sustain / Envelope.Release) * rt : 0.0;
-                    }
+                    return t < Envelope.Release ? -(Envelope.Sustain / Envelope.Release) * t : 0.0;
                 }
             }
         }
@@ -209,6 +165,39 @@ namespace Kb10uy.Audio.FM
         /// 音量変化がなく、ホールド時の音量が最大なエンベロープを取得します。
         /// </summary>
         public static Envelope Default = new Envelope { Attack = 0, Decay = 0, Sustain = 1, Release = 0 };
+    }
+
+
+    /// <summary>
+    /// オペレータの情報のセットを定義します。
+    /// </summary>
+    public class OperatorInfomation
+    {
+
+        /// <summary>
+        /// 変調指数を取得・設定します。
+        /// </summary>
+        public double? ModulationIndex { get; set; }
+
+        /// <summary>
+        /// オシレータを取得・設定します。
+        /// </summary>
+        public FMOscillatorFunction Oscillator { get; set; }
+
+        /// <summary>
+        /// エンベロープを取得・設定します。
+        /// </summary>
+        public Envelope? Envelope { get; set; }
+
+        /// <summary>
+        /// クラスの新しいインスタンスを初期化します。
+        /// </summary>
+        public OperatorInfomation()
+        {
+            ModulationIndex = null;
+            Oscillator = null;
+            Envelope = null;
+        }
     }
 
 }
