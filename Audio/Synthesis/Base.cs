@@ -60,5 +60,13 @@ namespace Kb10uy.Audio.Synthesis
         /// 音量変化がなく、ホールド時の音量が最大なエンベロープを取得します。
         /// </summary>
         public static Envelope Default = new Envelope { Attack = 0, Decay = 0, Sustain = 1, Release = 0 };
+
+        public Envelope(double a,double d,double s,double r)
+        {
+            Attack = a;
+            Decay = d;
+            Sustain = s;
+            Release = r;
+        }
     }
 }

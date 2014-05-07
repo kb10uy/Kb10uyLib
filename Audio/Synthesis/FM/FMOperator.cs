@@ -106,7 +106,9 @@ namespace Kb10uy.Audio.Synthesis.FM
         {
             var env = GetEnvelopeState(state.Time, state.IsHolding);
             var myfr = state.Frequency * Detune;
-            return ModulationIndex * Oscillator(myfr * state.Time + state.State) * env;
+            var ctime = 1.0 / myfr;
+            var pos = (state.Time % ctime) / ctime;
+            return ModulationIndex * Oscillator(pos, state.State) * env;
         }
 
         /// <summary>

@@ -11,8 +11,9 @@ namespace Kb10uy.Audio.Synthesis.FM
     /// オシレータのデリゲートを定義します。
     /// </summary>
     /// <param name="t">0~1の周期内のポジション</param>
+    /// <param name="p">初期位相</param>
     /// <returns>-1~+1の値</returns>
-    public delegate double FMOscillatorFunction(double t);
+    public delegate double FMOscillatorFunction(double t, double p);
 
     /// <summary>
     /// FM音源におけるオシレータ関数を定義します。
@@ -24,44 +25,47 @@ namespace Kb10uy.Audio.Synthesis.FM
         /// 正弦波オシレータを定義します。
         /// </summary>
         /// <param name="t">周期内ポジション</param>
+        /// <param name="p">初期位相</param>
         /// <returns>-1.0~1.0までの範囲の値</returns>
-        public static double Sine(double t)
+        public static double Sine(double t, double p)
         {
-            return Math.Sin(Math.PI * 2.0 * t);
+            return Math.Sin(Math.PI * 2.0 * t + p);
         }
 
         /// <summary>
         /// 矩形波オシレータを定義します。
         /// </summary>
         /// <param name="t">周期内ポジション</param>
+        /// <param name="p">初期位相</param>
         /// <returns>-1.0~1.0までの範囲の値</returns>
-        public static double Square(double t)
+        public static double Square(double t, double p)
         {
-            return (t < 0.5 ? 1.0 : -1.0);
+            return ((t + p) < 0.5 ? 1.0 : -1.0);
         }
 
         /// <summary>
         /// 三角波オシレータを定義します。
         /// </summary>
         /// <param name="t">周期内ポジション</param>
+        /// <param name="p">初期位相</param>
         /// <returns>-1.0~1.0までの範囲の値</returns>
-        public static double Triangle(double t)
+        public static double Triangle(double t, double p)
         {
-            if (t < 0.0)
+            if ((t + p) < 0.0)
             {
                 throw new ArgumentException("TriangleAbsoluteの有効範囲は0≦t≦1です");
             }
-            else if (t <= 0.25)
+            else if ((t + p) <= 0.25)
             {
                 return t * 4.0;
             }
-            else if (t <= 0.75)
+            else if ((t + p) <= 0.75)
             {
                 return t * -4.0 + 2.0;
             }
-            else if (t <= 1.0)
+            else if ((t + p) <= 1.0)
             {
-                return t * 4.0 - 4.0;
+                return (t + p) * 4.0 - 4.0;
             }
             else
             {
@@ -73,20 +77,22 @@ namespace Kb10uy.Audio.Synthesis.FM
         /// 上行形ノコギリ波オシレータを定義します。
         /// </summary>
         /// <param name="t">周期内ポジション</param>
+        /// <param name="p">初期位相</param>
         /// <returns>-1.0~1.0までの範囲の値</returns>
-        public static double UpSaw(double t)
+        public static double UpSaw(double t, double p)
         {
-            return t * 2.0 - 1.0;
+            return (t + p) * 2.0 - 1.0;
         }
 
         /// <summary>
         /// 下行形ノコギリ波オシレータを定義します。
         /// </summary>
         /// <param name="t">周期内ポジション</param>
+        /// <param name="p">初期位相</param>
         /// <returns>-1.0~1.0までの範囲の値</returns>
-        public static double DownSaw(double t)
+        public static double DownSaw(double t, double p)
         {
-            return t * -2.0 + 1.0;
+            return (t + p) * -2.0 + 1.0;
         }
 
     }
