@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using Kb10uy.IO;
 using Kb10uy.Scripting;
 using Kb10uy.Extension;
 using Kb10uy.MultiMedia;
 using Kb10uy.Scripting.Text;
-using Kb10uy.Audio.FM;
+using Kb10uy.Audio.Synthesis;
+using Kb10uy.Audio.Synthesis.FM;
 
 namespace Kb10uyCUISample
 {
@@ -16,38 +18,22 @@ namespace Kb10uyCUISample
     {
         static void Main(string[] args)
         {
-            Config cfg = new Config();
-            cfg["A.B"] = 12;
-            cfg["A.C"] = "22";
-            cfg["B.C.F"] = new ConfigValue[] 
+            //HSPとかで簡単に描画できるように
+            //1/640秒ごとに計算して出力します
+            var synth = new FMSynthesiser(new FMOperatorInfomation[] 
             {
-                1,2,3,4,5,
-                "This","it",
-                new ConfigValue[]{10,20,30}
-                
-            };
-
-            cfg.SaveFile("test.cfg");
-
-            Console.WriteLine(cfg["B.C.F"][7][2].NumberValue);
-
-            var kr = new KastepsRuntime();
-            kr.LoadScriptFromString(@"
-begin {
-    
-}
-
-every {
-
-}
-
-10 {
-
-}
-            ");
-
-            Console.ReadLine();
-            var ope = new FMOperator();
+                new FMOperatorInfomation{Envelope=Envelope.Default,Oscillator=FMOscillators.Sine},
+                new FMOperatorInfomation{Envelope=Envelope.Default,Oscillator=FMOscillators.Sine},
+            }, FMAlgorithms.PairMixAlgorithm);
+            var str = "";
+            synth.Attack(1);
+            for (int i = 0; i < 640; i++)
+            {
+                var pos = i / 640.0;
+                var st = synth.GetState(pos);
+                str += st.ToString() + Environment.NewLine;
+            }
+            File.WriteAllText("fm.txt", str);
         }
     }
 }

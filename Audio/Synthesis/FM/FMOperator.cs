@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kb10uy.Audio.FM
+namespace Kb10uy.Audio.Synthesis.FM
 {
     /// <summary>
     /// FM音源におけるオペレータを定義します。
@@ -26,6 +26,11 @@ namespace Kb10uy.Audio.FM
         /// 変調指数、もしくは振幅を取得・設定します。
         /// </summary>
         public double ModulationIndex { get; set; }
+
+        /// <summary>
+        /// 発音時の周波数に対して実際に生成する周波数の比率(デチューン)を取得・設定します。
+        /// </summary>
+        public double Detune { get; set; }
         #endregion
 
         #region コンストラクタ
@@ -38,6 +43,7 @@ namespace Kb10uy.Audio.FM
             Oscillator = FMOscillators.Sine;
             Envelope = Envelope.Default;
             ModulationIndex = 1.0;
+            Detune = 1.0;
         }
 
         /// <summary>
@@ -53,12 +59,11 @@ namespace Kb10uy.Audio.FM
         /// <summary>
         /// Operatorクラスの新しいインスタンスを初期化します。
         /// </summary>
-        /// <param name="osc">オシレータ</param>
-        /// <param name="index">変調指数・振幅</param>
-        public FMOperator(FMOscillatorFunction osc, double index)
-            : this(osc)
+        /// <param name="info">オペレータの情報</param>
+        public FMOperator(FMOperatorInfomation info)
+            : this()
         {
-            ModulationIndex = index;
+            SetInfomation(info);
         }
         #endregion
 
@@ -67,13 +72,14 @@ namespace Kb10uy.Audio.FM
         /// 固定長発音関係は取得できません。
         /// </summary>
         /// <returns>取得される情報</returns>
-        public OperatorInfomation GetInfomation()
+        public FMOperatorInfomation GetInfomation()
         {
-            return new OperatorInfomation
+            return new FMOperatorInfomation
             {
                 Oscillator = this.Oscillator,
                 Envelope = this.Envelope,
-                ModulationIndex = this.ModulationIndex
+                ModulationIndex = this.ModulationIndex,
+                Detune = this.Detune,
             };
         }
 
@@ -82,11 +88,12 @@ namespace Kb10uy.Audio.FM
         /// <para>nullのプロパティは反映されません。</para>
         /// </summary>
         /// <param name="info">オペレータ情報</param>
-        public void SetInfomation(OperatorInfomation info)
+        public void SetInfomation(FMOperatorInfomation info)
         {
             Oscillator = info.Oscillator ?? this.Oscillator;
             Envelope = info.Envelope ?? this.Envelope;
             ModulationIndex = info.ModulationIndex ?? this.ModulationIndex;
+            Detune = info.Detune ?? this.Detune;
         }
 
         /// <summary>
@@ -98,9 +105,8 @@ namespace Kb10uy.Audio.FM
         public double GetState(FMSynthesisState state)
         {
             var env = GetEnvelopeState(state.Time, state.IsHolding);
-            var cycle = 1.0 / state.Frequency;
-            var pos = (state.Time % cycle) / cycle;
-            return ModulationIndex * Oscillator(pos) * env;
+            var myfr = state.Frequency * Detune;
+            return ModulationIndex * Oscillator(myfr * state.Time + state.State) * env;
         }
 
         /// <summary>
@@ -136,42 +142,11 @@ namespace Kb10uy.Audio.FM
         }
     }
 
-    /// <summary>
-    /// 一般的なエンベロープを定義します。
-    /// </summary>
-    public struct Envelope
-    {
-        /// <summary>
-        /// アタック
-        /// </summary>
-        public double Attack;
-
-        /// <summary>
-        /// ディケイ
-        /// </summary>
-        public double Decay;
-
-        /// <summary>
-        /// サステイン
-        /// </summary>
-        public double Sustain;
-
-        /// <summary>
-        /// リリース
-        /// </summary>
-        public double Release;
-
-        /// <summary>
-        /// 音量変化がなく、ホールド時の音量が最大なエンベロープを取得します。
-        /// </summary>
-        public static Envelope Default = new Envelope { Attack = 0, Decay = 0, Sustain = 1, Release = 0 };
-    }
-
 
     /// <summary>
     /// オペレータの情報のセットを定義します。
     /// </summary>
-    public class OperatorInfomation
+    public class FMOperatorInfomation
     {
 
         /// <summary>
@@ -190,13 +165,19 @@ namespace Kb10uy.Audio.FM
         public Envelope? Envelope { get; set; }
 
         /// <summary>
+        /// デチューンを取得・設定します。
+        /// </summary>
+        public double? Detune { get; set; }
+
+        /// <summary>
         /// クラスの新しいインスタンスを初期化します。
         /// </summary>
-        public OperatorInfomation()
+        public FMOperatorInfomation()
         {
             ModulationIndex = null;
             Oscillator = null;
             Envelope = null;
+            Detune = null;
         }
     }
 

@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kb10uy.Audio.FM
+namespace Kb10uy.Audio.Synthesis.FM
 {
     /// <summary>
     /// FM音源のシンセサイザーを定義します。
     /// </summary>
-    public class FMSynthesiser
+    public class FMSynthesiser : ISynthesisable
     {
         FMSynthesisState _state;
         object _tag;
@@ -82,7 +82,7 @@ namespace Kb10uy.Audio.FM
         /// </summary>
         /// <param name="opinfo">オペレータ情報のリスト。このリストの個数がオペレータ数になります。</param>
         /// <param name="algo"></param>
-        public FMSynthesiser(IList<OperatorInfomation> opinfo, FMAlgorithmFunction algo)
+        public FMSynthesiser(IList<FMOperatorInfomation> opinfo, FMAlgorithmFunction algo)
             : this(opinfo.Count, algo)
         {
             for (int i = 0; i < opinfo.Count; i++)
@@ -123,6 +123,8 @@ namespace Kb10uy.Audio.FM
         /// <returns>-1.0~+1.0の状態。</returns>
         public double GetState(double t)
         {
+            _state.Time = t;
+            //_state.State = t;
             return Algorithm(Operators, ref _tag, State);
         }
 
@@ -139,6 +141,12 @@ namespace Kb10uy.Audio.FM
         /// <para>このフィールドにオペレータ出力を加算すると、FM合成になります。</para>
         /// </summary>
         public double Time;
+
+        /// <summary>
+        /// 変調の状態
+        /// <para>初期状態ではTimeと同値です。</para>
+        /// </summary>
+        public double State;
 
         /// <summary>
         /// 周波数

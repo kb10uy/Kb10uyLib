@@ -64,11 +64,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FM\Algorithms.cs" />
-    <Compile Include="FM\FMSynthesiser.cs" />
-    <Compile Include="FM\Operator.cs" />
-    <Compile Include="FM\Oscillators.cs" />
+    <Compile Include="Synthesis\FM\FMAlgorithms.cs" />
+    <Compile Include="Synthesis\FM\FMSynthesiser.cs" />
+    <Compile Include="Synthesis\FM\FMOperator.cs" />
+    <Compile Include="Synthesis\FM\FMOscillators.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Synthesis\Base.cs" />
+    <Compile Include="Synthesis\WaveMixer.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
