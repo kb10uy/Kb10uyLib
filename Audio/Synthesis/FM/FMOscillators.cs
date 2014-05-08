@@ -128,7 +128,9 @@ namespace Kb10uy.Audio.Synthesis.FM
         /// <returns>-1.0~1.0までの範囲の値</returns>
         public static double UpSaw(double t, double p)
         {
-            return ((t * DoublePI + p) % DoublePI) * 2.0 - 1.0;
+            var pos = (t * DoublePI + p) % DoublePI;
+            pos = pos < 0 ? pos + DoublePI : pos;
+            return (pos % DoublePI) * 2.0 - 1.0;
         }
 
         /// <summary>
@@ -139,7 +141,9 @@ namespace Kb10uy.Audio.Synthesis.FM
         /// <returns>-1.0~1.0までの範囲の値</returns>
         public static double DownSaw(double t, double p)
         {
-            return ((t * DoublePI + p) % DoublePI) * -2.0 + 1.0;
+            var pos = (t * DoublePI + p) % DoublePI;
+            pos = pos < 0 ? pos + DoublePI : pos;
+            return (pos % DoublePI) * -2.0 + 1.0;
         }
 
     }
