@@ -67,11 +67,11 @@
   <ItemGroup>
     <Compile Include="MultiMedia\Mci.cs" />
     <Compile Include="Extension\Extensions.cs" />
-    <Compile Include="Extension\Unsafe.cs" />
     <Compile Include="Input\Input.cs" />
     <Compile Include="IO\BinaryContractSerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\Plugin.cs" />
+    <Compile Include="Windows\Msvcrt.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Net\" />

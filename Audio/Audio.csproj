@@ -72,7 +72,12 @@
     <Compile Include="Synthesis\Base.cs" />
     <Compile Include="Synthesis\WaveMixer.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Kb10uy\Kb10uy.csproj">
+      <Project>{a4f1cf05-fe9d-4bce-97c7-821f18d70373}</Project>
+      <Name>Kb10uy</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

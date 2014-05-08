@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Diagnostics;
 using Kb10uy.IO;
 using Kb10uy.Scripting;
 using Kb10uy.Extension;
@@ -22,13 +23,11 @@ namespace Kb10uyCUISample
             //1/640秒ごとに計算して出力します
             var synth = new FMSynthesiser(new FMOperatorInfomation[] 
             {
+                new FMOperatorInfomation{Envelope=Envelope.Default,Oscillator=FMOscillators.Triangle},
                 new FMOperatorInfomation{Envelope=Envelope.Default,Oscillator=FMOscillators.Sine},
-                new FMOperatorInfomation{Envelope=Envelope.Default,Oscillator=FMOscillators.Sine,Detune=0.75,ModulationIndex=2},
-            }, FMAlgorithms.PairMixAlgorithm);
+            }, FMAlgorithms.PairModulationAlgorithm);
             var str = "";
-            var freq = 4.0;
-            str += String.Format("キャリア detune : {0} 基本周波数 : {1}Hz", synth.Operators[0].Detune, freq) + Environment.NewLine;
-            str += String.Format("モジュレータ detune : {0} 変調指数 : {1}", synth.Operators[1].Detune, synth.Operators[1].ModulationIndex) + Environment.NewLine;
+            var freq = 1.0;
             synth.Attack(freq);
             for (int i = 0; i < 640; i++)
             {
@@ -37,6 +36,8 @@ namespace Kb10uyCUISample
                 str += st.ToString() + Environment.NewLine;
             }
             File.WriteAllText("fm.txt", str, Encoding.GetEncoding("Shift-JIS"));
+            Console.WriteLine("fm.txt wrote");
+            Console.ReadLine();
         }
     }
 }

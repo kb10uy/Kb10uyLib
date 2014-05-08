@@ -61,6 +61,13 @@ namespace Kb10uy.Audio.Synthesis
         /// </summary>
         public static Envelope Default = new Envelope { Attack = 0, Decay = 0, Sustain = 1, Release = 0 };
 
+        /// <summary>
+        /// 新しいインスタンスを初期化します。
+        /// </summary>
+        /// <param name="a">アタック</param>
+        /// <param name="d">ディケイ</param>
+        /// <param name="s">サステイン</param>
+        /// <param name="r">リリース</param>
         public Envelope(double a,double d,double s,double r)
         {
             Attack = a;

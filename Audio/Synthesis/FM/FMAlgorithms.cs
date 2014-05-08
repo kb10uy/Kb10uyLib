@@ -52,7 +52,7 @@ namespace Kb10uy.Audio.Synthesis.FM
         /// <param name="tag">フィードバックの保持など自由に使えるタグオブジェクト</param>
         /// <param name="state">合成状態の情報</param>
         /// <returns>状態</returns>
-        public static double PairMixAlgorithm(IList<FMOperator> op, ref object tag, FMSynthesisState state)
+        public static double PairModulationAlgorithm(IList<FMOperator> op, ref object tag, FMSynthesisState state)
         {
             var s = state;
             if (op.Count < 2) throw new ArgumentException("オペレータは最低2つ必要です");
@@ -81,24 +81,87 @@ namespace Kb10uy.Audio.Synthesis.FM
             return mix / max;
         }
 
-        #region 汎用メソッド
         /// <summary>
         /// 先頭をキャリア、それ以降をモジュレータとして、
         /// 全て直列に接続して変調します。
         /// </summary>
+        /// <param name="op">オペレーターのリスト</param>
+        /// <param name="tag">フィードバックの保持など自由に使えるタグオブジェクト</param>
         /// <param name="state">合成状態の情報</param>
-        /// <param name="op">変調するオペレータ</param>
         /// <returns>状態</returns>
-        public static double SerialModulation(FMSynthesisState state, params FMOperator[] op)
+        public static double SerialModulationAlgorithm(IList<FMOperator> op, ref object tag, FMSynthesisState state)
         {
-            var m = 0.0;
-            for (int i = op.Length - 1; i >= 0; i--)
+            var s = state;
+            var mix = 0.0;
+            for (int i = op.Count - 1; i >= 0; i--)
             {
-                m = op[i].GetState(state);
-                state.State += m;
+                mix = op[i].GetState(s);
+                s.State = mix;
             }
-            return m / op[0].ModulationIndex;
+            return mix / op[0].ModulationIndex;
         }
+
+        #region フィードバック
+        /// <summary>
+        /// フィードバックを利用できるアルゴリズムを定義します。
+        /// </summary>
+        public static class Feedbacking
+        {
+            /// <summary>
+            /// 単一のオペレータが自己フィードバックになる直列のアルゴリズムを定義します。
+            /// <para>呼び出しごとに更新されるので、呼び出し間で大きく時刻が違う場合想定されない結果になる恐れがあります。</para>
+            /// <para>常に一定時間前の状態を反映したい場合、SingleConstantFeedbackSerialAlgorithmを使用してください。</para>
+            /// </summary>
+            public class SingleFeedbackSerialAlgorithm
+            {
+                /// <summary>
+                /// 自己フィードバックになるチャンネルを取得します。
+                /// </summary>
+                public int FeedbackChannel { get; protected set; }
+
+                /// <summary>
+                /// 自己フィードバックになっているチャンネルの前回の状態を取得します。
+                /// </summary>
+                public double PreviousFeedbackState { get; protected set; }
+
+                /// <summary>
+                /// 新しいインスタンスを初期化します。
+                /// </summary>
+                /// <param name="fbch">自己フィードバックするチャンネル</param>
+                public SingleFeedbackSerialAlgorithm(int fbch)
+                {
+                    FeedbackChannel = fbch;
+                }
+
+                /// <summary>
+                /// 現在の状態でのアルゴリズムを定義します。
+                /// </summary>
+                /// <param name="op">オペレーターのリスト</param>
+                /// <param name="tag">フィードバックの保持など自由に使えるタグオブジェクト</param>
+                /// <param name="state">合成状態の情報</param>
+                /// <returns>状態</returns>
+                public double Algorithm(IList<FMOperator> op, ref object tag, FMSynthesisState state)
+                {
+                    var s = state;
+                    var mix = 0.0;
+                    for (int i = op.Count - 1; i >= 0; i--)
+                    {
+                        if (i == FeedbackChannel)
+                        {
+                            s.State += PreviousFeedbackState;
+                        }
+                        mix = op[i].GetState(s);
+                        if (i == FeedbackChannel)
+                        {
+                            PreviousFeedbackState = mix;
+                        }
+                        s.State = mix;
+                    }
+                    return mix / op[0].ModulationIndex;
+                }
+            }
+        }
+
         #endregion
 
     }

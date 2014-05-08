@@ -174,7 +174,7 @@ namespace Kb10uy.Extension
             {
                 dic[key] = new TValue();
             }
-            
+
             return dic[key];
         }
 
@@ -223,6 +223,86 @@ namespace Kb10uy.Extension
                 default:
                     return null;
             }
+        }
+    }
+
+    /// <summary>
+    /// 拡張的な数学系の機能を提供します。
+    /// 内部でmsvcrt.dllを使用しています。
+    /// </summary>
+    public static class MathEx
+    {
+        /// <summary>
+        /// フーリエ級数を用いた擬似的な矩形波を取得します。
+        /// <para>k=32まで計算されます。</para>
+        /// </summary>
+        /// <param name="t">位相</param>
+        /// <returns>値</returns>
+        public static double Square(double t)
+        {
+            var ret = 0.0;
+
+            for (int k = 1; k <= 32; k++)
+            {
+                ret += Math.Sin((double)(2 * k - 1) * t) / (2 * k - 1);
+            }
+
+            return ret * (4.0 / Math.PI);
+        }
+
+        /// <summary>
+        /// フーリエ級数を用いた擬似的な矩形波を取得します。
+        /// </summary>
+        /// <param name="t">位相</param>
+        /// <param name="kmax">無限級数展開のkの最大値</param>
+        /// <returns>値</returns>
+        public static double Square(double t, int kmax)
+        {
+            var ret = 0.0;
+
+            for (int k = 1; k <= kmax; k++)
+            {
+                ret += Math.Sin((double)(2 * k - 1) * t) / (2 * k - 1);
+            }
+
+            return ret * (4.0 / Math.PI);
+        }
+
+        /// <summary>
+        /// フーリエ級数を用いた擬似的な矩形波を取得します。
+        /// <para>k=4まで計算されます。</para>
+        /// </summary>
+        /// <param name="t">位相</param>
+        /// <returns>値</returns>
+        public static double Triangle(double t)
+        {
+            var ret = 0.0;
+
+            for (int k = 1; k <= 4; k++)
+            {
+                ret += Math.Sin((Math.PI * k) / 2.0) * (Math.Sin(k * t) / (double)(k * k));
+            }
+
+            return ret * (8.0 / (Math.PI * Math.PI));
+        }
+
+        /// <summary>
+        /// フーリエ級数を用いた擬似的な矩形波を取得します。
+        /// <para>k=4まで計算されます。</para>
+        /// </summary>
+        /// <param name="t">位相</param>
+        /// <param name="kmax">無限級数展開のkの最大値</param>
+        /// <returns>値</returns>
+        public static double Triangle(double t, int kmax)
+        {
+            var ret = 0.0;
+
+            for (int k = 1; k <= kmax; k++)
+            {
+                ret += Math.Sin((Math.PI * k) / 2.0) * (Math.Sin(k * t) / (double)(k * k));
+            }
+
+            return ret * (8.0 / (Math.PI * Math.PI));
         }
     }
 
