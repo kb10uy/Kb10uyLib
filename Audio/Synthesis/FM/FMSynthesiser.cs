@@ -30,14 +30,6 @@ namespace Kb10uy.Audio.Synthesis.FM
         public FMAlgorithmFunction Algorithm { get; set; }
 
         /// <summary>
-        /// 現在の合成状態を取得・設定します。
-        /// </summary>
-        public FMSynthesisState State
-        {
-            get { return _state; }
-        }
-
-        /// <summary>
         /// アルゴリズムに付随するタグオブジェクトを取得・設定します。
         /// </summary>
         public object AlgorithmTag
@@ -45,6 +37,15 @@ namespace Kb10uy.Audio.Synthesis.FM
             get { return _tag; }
             set { _tag = value; }
         }
+
+        /// <summary>
+        /// リリースした際に自然につながるように、最終取得時の状態を取得・設定します。
+        /// <para></para>
+        /// 通常は最後のGetStateが設定されますが、最終実行と最終状態が一致しない場合、
+        /// 手動で設定することも出来ます。
+        /// </para>
+        /// </summary>
+        public double LastState { get; set; }
         #endregion
 
         #region コンストラクタ
@@ -101,6 +102,7 @@ namespace Kb10uy.Audio.Synthesis.FM
             _state.Frequency = basefreq;
             _state.IsHolding = true;
             _state.Time = 0.0;
+            //_state.ReleaseTime = 0.0;
         }
 
         /// <summary>
@@ -117,15 +119,12 @@ namespace Kb10uy.Audio.Synthesis.FM
         /// </summary>
         /// <param name="t">
         /// 時刻。
-        /// <para>State.IsHoldingがtrueの場合、発音開始時を0とします。</para>
-        /// <para>State.IsHoldingがfalseの場合、発音終了時を0とします。</para>
         /// </param>
         /// <returns>-1.0~+1.0の状態。</returns>
         public double GetState(double t)
         {
             _state.Time = t;
-            //_state.State = t;
-            return Algorithm(Operators, ref _tag, State);
+            return Algorithm(Operators, ref _tag, _state);
         }
 
 
@@ -140,7 +139,7 @@ namespace Kb10uy.Audio.Synthesis.FM
         /// 時刻
         /// <para>このフィールドにオペレータ出力を加算すると、FM合成になります。</para>
         /// </summary>
-        public double Time;
+        internal double Time;
 
         /// <summary>
         /// 変調の状態
@@ -151,12 +150,12 @@ namespace Kb10uy.Audio.Synthesis.FM
         /// <summary>
         /// 周波数
         /// </summary>
-        public double Frequency;
+        internal double Frequency;
 
         /// <summary>
         /// ホールド(発音状態)
         /// </summary>
-        public bool IsHolding;
+        internal bool IsHolding;
     }
 
 }

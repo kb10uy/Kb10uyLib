@@ -107,7 +107,7 @@ namespace Kb10uy.Audio.Synthesis.FM
             var env = GetEnvelopeState(state.Time, state.IsHolding);
             var myfr = state.Frequency * Detune;
             var ctime = 1.0 / myfr;
-            var pos = (state.Time % ctime) / ctime;
+            var pos = ((state.Time) % ctime) / ctime;
             return ModulationIndex * Oscillator(pos, state.State) * env;
         }
 
@@ -120,26 +120,25 @@ namespace Kb10uy.Audio.Synthesis.FM
         /// <returns>エンベロープの状態</returns>
         public double GetEnvelopeState(double t, bool hold)
         {
-            if (t < Envelope.Attack)
+            if (hold)
             {
-                return t / Envelope.Attack;
-            }
-            else if (t < Envelope.Attack + Envelope.Decay)
-            {
-                var a = Envelope.Decay / (Envelope.Sustain - 1.0);
-                var b = 1.0 - (Envelope.Attack * a);
-                return t * a + b;
-            }
-            else
-            {
-                if (hold)
+                if (t < Envelope.Attack)
                 {
-                    return Envelope.Sustain;
+                    return t / Envelope.Attack;
+                }
+                else if (t < Envelope.Attack + Envelope.Decay)
+                {
+                    var d = 1.0 - Envelope.Sustain;
+                    return 1.0 - ((t - Envelope.Attack) / Envelope.Decay * d);
                 }
                 else
                 {
-                    return t < Envelope.Release ? -(Envelope.Sustain / Envelope.Release) * t : 0.0;
+                    return Envelope.Sustain;
                 }
+            }
+            else
+            {
+                return t < Envelope.Release ? Envelope.Sustain - (Envelope.Sustain / Envelope.Release) * t : 0.0;
             }
         }
     }
